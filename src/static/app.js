@@ -32,10 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
     activitiesList.innerHTML = "";
     activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
     
-    // Get filter values
-    const selectedCategory = categoryFilter.value;
-    const selectedSort = sortBy.value;
-    const searchTerm = searchInput.value.toLowerCase();
+    // Get filter values with null checks
+    const selectedCategory = categoryFilter ? categoryFilter.value : "all";
+    const selectedSort = sortBy ? sortBy.value : "name-asc";
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
     
     // Filter activities
     let filteredActivities = Object.entries(allActivities).filter(([name, details]) => {
@@ -63,9 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
         case "name-desc":
           return nameB.localeCompare(nameA);
         case "date-newest":
-          return new Date(detailsB.created_date) - new Date(detailsA.created_date);
+          const dateA = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
+          const dateB = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
+          return dateB - dateA;
         case "date-oldest":
-          return new Date(detailsA.created_date) - new Date(detailsB.created_date);
+          const dateAOld = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
+          const dateBOld = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
+          return dateAOld - dateBOld;
         default:
           return 0;
       }
@@ -214,9 +218,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Add event listeners for toolbar controls
-  categoryFilter.addEventListener("change", renderActivities);
-  sortBy.addEventListener("change", renderActivities);
-  searchInput.addEventListener("input", renderActivities);
+  if (categoryFilter) {
+    categoryFilter.addEventListener("change", renderActivities);
+  }
+  if (sortBy) {
+    sortBy.addEventListener("change", renderActivities);
+  }
+  if (searchInput) {
+    searchInput.addEventListener("input", renderActivities);
+  }
 
   // Initialize app
   fetchActivities();
