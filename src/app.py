@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import os
+import json
 from pathlib import Path
 import json
 import secrets
@@ -22,119 +23,15 @@ current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
 
-# Pydantic models for request bodies
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-# In-memory session storage (tokens)
-# Note: Sessions will be lost on server restart - this is acceptable for the current
-# simple implementation without a database. In production, use Redis or similar.
-active_sessions = {}
-
-# Load teacher credentials from JSON file
-# Note: Passwords are stored in plain text as specified in requirements.
-# In production, passwords should be hashed using bcrypt or similar.
-def load_teachers():
-    teachers_file = os.path.join(current_dir, "teachers.json")
-    with open(teachers_file, 'r') as f:
-        data = json.load(f)
-        return data['teachers']
-
-# Authentication dependency
-def get_current_user(authorization: str = Header(None)):
-    if authorization is None:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    # Check if token exists in active sessions
-    if authorization not in active_sessions:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-    
-    return active_sessions[authorization]
-
-# In-memory activity database
-activities = {
-    "Chess Club": {
-        "description": "Learn strategies and compete in chess tournaments",
-        "schedule": "Fridays, 3:30 PM - 5:00 PM",
-        "max_participants": 12,
-        "participants": ["michael@mergington.edu", "daniel@mergington.edu"],
-        "category": "Academic",
-        "created_date": "2024-01-15"
-    },
-    "Programming Class": {
-        "description": "Learn programming fundamentals and build software projects",
-        "schedule": "Tuesdays and Thursdays, 3:30 PM - 4:30 PM",
-        "max_participants": 20,
-        "participants": ["emma@mergington.edu", "sophia@mergington.edu"],
-        "category": "Academic",
-        "created_date": "2024-02-01"
-    },
-    "Gym Class": {
-        "description": "Physical education and sports activities",
-        "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
-        "max_participants": 30,
-        "participants": ["john@mergington.edu", "olivia@mergington.edu"],
-        "category": "Sports",
-        "created_date": "2024-01-10"
-    },
-    "Soccer Team": {
-        "description": "Join the school soccer team and compete in matches",
-        "schedule": "Tuesdays and Thursdays, 4:00 PM - 5:30 PM",
-        "max_participants": 22,
-        "participants": ["liam@mergington.edu", "noah@mergington.edu"],
-        "category": "Sports",
-        "created_date": "2024-01-20"
-    },
-    "Basketball Team": {
-        "description": "Practice and play basketball with the school team",
-        "schedule": "Wednesdays and Fridays, 3:30 PM - 5:00 PM",
-        "max_participants": 15,
-        "participants": ["ava@mergington.edu", "mia@mergington.edu"],
-        "category": "Sports",
-        "created_date": "2024-01-25"
-    },
-    "Art Club": {
-        "description": "Explore your creativity through painting and drawing",
-        "schedule": "Thursdays, 3:30 PM - 5:00 PM",
-        "max_participants": 15,
-        "participants": ["amelia@mergington.edu", "harper@mergington.edu"],
-        "category": "Arts",
-        "created_date": "2024-02-05"
-    },
-    "Drama Club": {
-        "description": "Act, direct, and produce plays and performances",
-        "schedule": "Mondays and Wednesdays, 4:00 PM - 5:30 PM",
-        "max_participants": 20,
-        "participants": ["ella@mergington.edu", "scarlett@mergington.edu"],
-        "category": "Arts",
-        "created_date": "2024-02-10"
-    },
-    "Math Club": {
-        "description": "Solve challenging problems and participate in math competitions",
-        "schedule": "Tuesdays, 3:30 PM - 4:30 PM",
-        "max_participants": 10,
-        "participants": ["james@mergington.edu", "benjamin@mergington.edu"],
-        "category": "Academic",
-        "created_date": "2024-01-30"
-    },
-    "Debate Team": {
-        "description": "Develop public speaking and argumentation skills",
-        "schedule": "Fridays, 4:00 PM - 5:30 PM",
-        "max_participants": 12,
-        "participants": ["charlotte@mergington.edu", "henry@mergington.edu"],
-        "category": "Academic",
-        "created_date": "2024-02-15"
-    },
-    "GitHub Skills": {
-        "description": "Learn practical coding and collaboration skills through GitHub's interactive courses",
-        "schedule": "Thursdays, 4:30 PM - 5:30 PM",
-        "max_participants": 25,
-        "category": "Academic",
-        "created_date": "2024-02-15"
-        "participants": []
-    }
-}
+# Load activities from JSON file
+activities_file = os.path.join(current_dir, "activities.json")
+try:
+    with open(activities_file, "r") as f:
+        activities = json.load(f)
+except FileNotFoundError:
+    raise RuntimeError(f"Activities file not found: {activities_file}")
+except json.JSONDecodeError as e:
+    raise RuntimeError(f"Invalid JSON in activities file: {e}")
 
 
 @app.get("/")
