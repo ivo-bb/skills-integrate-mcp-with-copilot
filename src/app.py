@@ -28,9 +28,13 @@ class LoginRequest(BaseModel):
     password: str
 
 # In-memory session storage (tokens)
+# Note: Sessions will be lost on server restart - this is acceptable for the current
+# simple implementation without a database. In production, use Redis or similar.
 active_sessions = {}
 
 # Load teacher credentials from JSON file
+# Note: Passwords are stored in plain text as specified in requirements.
+# In production, passwords should be hashed using bcrypt or similar.
 def load_teachers():
     teachers_file = os.path.join(current_dir, "teachers.json")
     with open(teachers_file, 'r') as f:
