@@ -51,6 +51,13 @@ body::before {
   }
 }
 
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
 header {
   text-align: center;
   padding: 20px 0;
