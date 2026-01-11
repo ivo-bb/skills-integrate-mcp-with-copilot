@@ -62,14 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
           return nameA.localeCompare(nameB);
         case "name-desc":
           return nameB.localeCompare(nameA);
-        case "date-newest":
+        case "date-newest": {
           const dateA = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
           const dateB = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
           return dateB - dateA;
-        case "date-oldest":
-          const dateAOld = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
-          const dateBOld = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
-          return dateAOld - dateBOld;
+        }
+        case "date-oldest": {
+          const dateA = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
+          const dateB = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
+          return dateA - dateB;
+        }
         default:
           return 0;
       }
