@@ -77,7 +77,7 @@ activities = {
     },
     "GitHub Skills": {
         "description": "Learn practical coding and collaboration skills with GitHub - part of the GitHub Certifications program",
-        "schedule": "Wednesdays, 3:30 PM - 5:00 PM",
+        "schedule": "Mondays, 3:30 PM - 5:00 PM",
         "max_participants": 25,
         "participants": []
     }
