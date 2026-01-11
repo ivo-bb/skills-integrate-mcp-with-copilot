@@ -57,6 +57,67 @@ section h3 {
   color: #1a237e;
 }
 
+/* Toolbar styles */
+#toolbar {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.toolbar-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group,
+.search-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label,
+.search-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #1a237e;
+  font-size: 14px;
+}
+
+.filter-group select,
+.search-group input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.search-group input {
+  width: 100%;
+}
+
+/* Mobile responsive adjustments for toolbar */
+@media (max-width: 768px) {
+  .toolbar-row {
+    flex-direction: column;
+  }
+  
+  .filter-group,
+  .search-group {
+    min-width: 100%;
+  }
+}
+
 .activity-card {
   margin-bottom: 15px;
   padding: 15px;
