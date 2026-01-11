@@ -37,6 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedSort = sortBy ? sortBy.value : "name-asc";
     const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
     
+    // Helper function to parse dates with fallback
+    const parseDate = (dateString) => {
+      if (!dateString) {
+        // Return a far future date so activities without dates appear last
+        return new Date('9999-12-31');
+      }
+      return new Date(dateString);
+    };
+    
     // Filter activities
     let filteredActivities = Object.entries(allActivities).filter(([name, details]) => {
       // Category filter
@@ -63,13 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
         case "name-desc":
           return nameB.localeCompare(nameA);
         case "date-newest": {
-          const dateA = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
-          const dateB = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
+          const dateA = parseDate(detailsA.created_date);
+          const dateB = parseDate(detailsB.created_date);
           return dateB - dateA;
         }
         case "date-oldest": {
-          const dateA = detailsA.created_date ? new Date(detailsA.created_date) : new Date(0);
-          const dateB = detailsB.created_date ? new Date(detailsB.created_date) : new Date(0);
+          const dateA = parseDate(detailsA.created_date);
+          const dateB = parseDate(detailsB.created_date);
           return dateA - dateB;
         }
         default:
@@ -108,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activityCard.innerHTML = `
         <h4>${name}</h4>
         <p>${details.description}</p>
-        <p><strong>Category:</strong> ${details.category}</p>
+        <p><strong>Category:</strong> ${details.category || 'Uncategorized'}</p>
         <p><strong>Schedule:</strong> ${details.schedule}</p>
         <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
         <div class="participants-container">
