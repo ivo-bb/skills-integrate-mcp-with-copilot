@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Configuration constants
+  const MODAL_AUTO_CLOSE_DELAY = 2500; // Time in ms to auto-close modal after successful registration
+  const MESSAGE_AUTO_HIDE_DELAY = 5000; // Time in ms to auto-hide success/error messages
+
   const activitiesList = document.getElementById("activities-list");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
@@ -135,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.classList.remove("hidden");
 
-      // Hide message after 5 seconds
+      // Hide message after configured delay
       setTimeout(() => {
         messageDiv.classList.add("hidden");
-      }, 5000);
+      }, MESSAGE_AUTO_HIDE_DELAY);
     } catch (error) {
       messageDiv.textContent = "Failed to unregister. Please try again.";
       messageDiv.className = "error";
@@ -177,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Close modal after successful registration
         setTimeout(() => {
           closeRegistrationModal();
-        }, 2500);
+        }, MODAL_AUTO_CLOSE_DELAY);
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -185,10 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.classList.remove("hidden");
 
-      // Hide message after 5 seconds
+      // Hide message after configured delay
       setTimeout(() => {
         messageDiv.classList.add("hidden");
-      }, 5000);
+      }, MESSAGE_AUTO_HIDE_DELAY);
     } catch (error) {
       messageDiv.textContent = "Failed to sign up. Please try again.";
       messageDiv.className = "error";
