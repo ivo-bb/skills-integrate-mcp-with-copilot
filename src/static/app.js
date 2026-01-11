@@ -1,8 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Configuration constants
+  const MODAL_AUTO_CLOSE_DELAY = 2500; // Time in ms to auto-close modal after successful registration
+  const MESSAGE_AUTO_HIDE_DELAY = 5000; // Time in ms to auto-hide success/error messages
+
   const activitiesList = document.getElementById("activities-list");
-  const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const modal = document.getElementById("registration-modal");
+  const modalActivityName = document.getElementById("modal-activity-name");
+  const activityInput = document.getElementById("activity");
+  const closeModalBtn = document.querySelector(".close-modal");
+
+  // Function to open registration modal
+  function openRegistrationModal(activityName) {
+    modalActivityName.textContent = activityName;
+    activityInput.value = activityName;
+    messageDiv.classList.add("hidden");
+    document.getElementById("email").value = "";
+    modal.classList.remove("hidden");
+  }
+
+  // Function to close registration modal
+  function closeRegistrationModal() {
+    modal.classList.add("hidden");
+  }
+
+  // Close modal when clicking the X
+  closeModalBtn.addEventListener("click", closeRegistrationModal);
+
+  // Close modal when clicking outside of it
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeRegistrationModal();
+    }
+  });
+
+  // Close modal on Escape key
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+      closeRegistrationModal();
+    }
+  });
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -45,15 +83,18 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="participants-container">
             ${participantsHTML}
           </div>
+          <button class="register-btn" data-activity="${name}">Register Student</button>
         `;
 
         activitiesList.appendChild(activityCard);
+      });
 
-        // Add option to select dropdown
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        activitySelect.appendChild(option);
+      // Add event listeners to register buttons
+      document.querySelectorAll(".register-btn").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          const activityName = event.target.getAttribute("data-activity");
+          openRegistrationModal(activityName);
+        });
       });
 
       // Add event listeners to delete buttons
@@ -98,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.classList.remove("hidden");
 
-      // Hide message after 5 seconds
+      // Hide message after configured delay
       setTimeout(() => {
         messageDiv.classList.add("hidden");
-      }, 5000);
+      }, MESSAGE_AUTO_HIDE_DELAY);
     } catch (error) {
       messageDiv.textContent = "Failed to unregister. Please try again.";
       messageDiv.className = "error";
@@ -136,6 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Refresh activities list to show updated participants
         fetchActivities();
+        
+        // Close modal after successful registration
+        setTimeout(() => {
+          closeRegistrationModal();
+        }, MODAL_AUTO_CLOSE_DELAY);
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -143,10 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.classList.remove("hidden");
 
-      // Hide message after 5 seconds
+      // Hide message after configured delay
       setTimeout(() => {
         messageDiv.classList.add("hidden");
-      }, 5000);
+      }, MESSAGE_AUTO_HIDE_DELAY);
     } catch (error) {
       messageDiv.textContent = "Failed to sign up. Please try again.";
       messageDiv.className = "error";
