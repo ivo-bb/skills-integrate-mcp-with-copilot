@@ -87,8 +87,14 @@ section h3 {
 
 .register-btn {
   margin-top: auto;
-  padding-top: 10px;
+  padding: 10px 15px;
   background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
 }
 
 .register-btn:hover {
@@ -222,7 +228,6 @@ footer {
 
 /* Modal Styles */
 .modal {
-  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
@@ -231,16 +236,13 @@ footer {
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal.hidden {
   display: none;
-}
-
-.modal:not(.hidden) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .modal-content {

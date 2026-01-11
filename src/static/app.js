@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Close modal after successful registration
         setTimeout(() => {
           closeRegistrationModal();
-        }, 1500);
+        }, 2500);
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
